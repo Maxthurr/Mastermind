@@ -1,20 +1,19 @@
 import pygame
 from pygame.locals import *
-import numpy as np
 import random
 
 COLOR_DICT = {
-    'yellow': (255, 255, 0),
     'red': (255, 0, 0),
-    'green': (0, 255, 0),
-    'blue': (0, 0, 255),
-    'white': (255, 255, 255),
     'orange': (255, 165, 0),
-    'pink': (255, 192, 203),
+    'yellow': (255, 255, 0),
+    'light_blue': (0, 255, 255),
+    'blue': (0, 0, 255),
+    'green': (0, 255, 0),
     'purple': (128, 0, 128),
+    'pink': (255, 192, 203),
 }
 
-SCREEN_WIDTH = 800 # screen width, modify this to change the size of the window
+SCREEN_WIDTH = 900 # screen width, modify this to change the size of the window
 SCREEN_HEIGHT = 1000 # screen height, modify this to change the size of the window
 
 class Mastermind:
@@ -22,7 +21,7 @@ class Mastermind:
         self.WINDOW_SIZE = (SCREEN_WIDTH, SCREEN_HEIGHT)
         self.COLORS = COLOR_DICT
         self.COLOR_NUM = {i:list(self.COLORS.keys())[i] for i in range(len(self.COLORS))}
-        self.COLOR_CHOICE = [0] * 4
+        self.COLOR_TO_GUESS = [0] * 4
         self.attempts_nb = 0
 
         pygame.init()
@@ -37,16 +36,36 @@ class Mastermind:
 
     def __str__(self):
         # Might need to change this 
-        return str(self.COLOR_CHOICE)
+        return str(self.COLOR_TO_GUESS)
         
 
-    def generate_color_choice(self):
-        self.COLOR_CHOICE = [random.choice(list(self.COLORS.keys())) for i in range(4)]
-        return self.COLOR_CHOICE
+    def generate_colors_to_guess(self):
+        self.COLOR_TO_GUESS = [random.choice(list(self.COLOR_NUM.keys())) for i in range(4)]
+        return self.COLOR_TO_GUESS   
 
 
-    # NEED TO CREATE FUNCTION TO HANDLE CHOICE OF COLORS
-    #def handle_choice(self, choice):       choice = list of color numbers -----> returns self.guess (list of color numbers)
+    # NEED TO BE DONE: CREATE UI AND GET PLAYER'S CHOICE
+    def handle_choice(self, choice):    # need to find a way to get player's choice
+        self.guess = choice
+        self.attempts_nb += 1
+        return self.guess
+
+
+    def create_ui(self):
+        # TO BE DONE: CREATE UI
+        self.screen.fill((0, 0, 0))
+
+        for i in range(8):
+            rectangle_width = SCREEN_WIDTH/8
+            rectangle_height = SCREEN_HEIGHT/10
+            if i%2!=0:
+                rectangle_width = SCREEN_WIDTH/8 + 1 # prevents a 1 pixel gap between some rectangles when screen width/8 isn't an integer (always happens on odd iterations)
+                                                     # probably not the best way to do it but it works
+
+            pygame.draw.rect(self.screen, self.COLORS[self.COLOR_NUM[i]], pygame.Rect((SCREEN_WIDTH/8*i, 0), (rectangle_width, rectangle_height)))
+
+        pygame.draw.line(self.screen, (255, 255, 255), (0, SCREEN_HEIGHT/10), (SCREEN_WIDTH, SCREEN_HEIGHT/10), 5)
+        pygame.draw.line(self.screen, (255, 255, 255), (SCREEN_WIDTH*4/5, SCREEN_HEIGHT/10), (SCREEN_WIDTH*4/5, SCREEN_HEIGHT), 5)
 
 
     @staticmethod
@@ -63,17 +82,17 @@ class Mastermind:
 
 
     def result(self):
-        # TO BE DONE: CHECK IF THE GUESS IS CORRECT
-        if self.guess == self.COLOR_CHOICE:
+        # Not sure if this is the best way to do it but still works
+        if self.guess == self.COLOR_TO_GUESS:
             return 'win'
-        if self.guess != self.COLOR_CHOICE and self.attempts_nb == 5:
+        if self.guess != self.COLOR_TO_GUESS and self.attempts_nb == 5:
             return 'lose'
         
 
     def play(self):
-        self.generate_color_choice()
+        self.generate_colors_to_guess()
         while True:
-            #self.create_ui()
+            self.create_ui()
             pygame.display.flip()
             key = self.get_key()
             if key == 'quit':
@@ -82,9 +101,9 @@ class Mastermind:
                 self.handle_choice()
             if self.result() == 'win':
                 continue
-                # TO BE DONE: WIN SCREEN
+                # TO BE DONE: WIN SCREEN AND ADD A BUTTON TO PLAY AGAIN
             if self.result() == 'lose':
-                # TO BE DONE: LOSE SCREEN
+                # TO BE DONE: LOSE SCREEN, ADD A BUTTON TO PLAY AGAIN AND SHOW THE SOLUTION
                 continue
 
 
