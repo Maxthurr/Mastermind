@@ -85,7 +85,7 @@ class Mastermind:
     def handle_choice(self):
         self.validate_choice = True
         print('handling choice')
-        if self.guess != self.COLOR_TO_GUESS and self.attempts_nb < 5:
+        if self.guess != self.COLOR_TO_GUESS and self.attempts_nb <= 5:
             well_placed = len([i for i, j in zip(self.guess, self.COLOR_TO_GUESS) if i == j])
             misplaced = len([i for i in self.guess if i in self.COLOR_TO_GUESS]) - well_placed
             
