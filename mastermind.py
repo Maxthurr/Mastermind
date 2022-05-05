@@ -77,7 +77,7 @@ class Mastermind:
             self.circles_center.append((SCREEN_WIDTH/6 + 100*i, SCREEN_HEIGHT/10 +100*self.attempts_nb))
 
         validate_text = self.font.render('Validate', True, (255, 255, 255))
-        validate_box = validate_text.get_rect(center=(SCREEN_WIDTH/6 + 100*4 + 75, (SCREEN_HEIGHT/10 + 65*self.attempts_nb + 35)+self.SPACING*(self.attempts_nb-1)))
+        validate_box = validate_text.get_rect(center=(SCREEN_WIDTH/6 + 400 + 75, (SCREEN_HEIGHT/10 + 65*self.attempts_nb + 35)+self.SPACING*(self.attempts_nb-1)))
         self.screen.blit(validate_text, validate_box)
         pygame.draw.rect(self.screen, (255, 255, 255), pygame.Rect((SCREEN_WIDTH/6 + 100*4, (SCREEN_HEIGHT/10 +65*self.attempts_nb)+self.SPACING*(self.attempts_nb-1)), (150, 70)), width=5)
 
@@ -135,8 +135,8 @@ class Mastermind:
                 self.screen.fill((0, 0, 0), pygame.Rect((SCREEN_WIDTH*5/6/2 - 250/2, SCREEN_HEIGHT/10 + self.SPACING*2/3), (250, 30)))   # erase previous color picked prompt
                 print('guess', self.guess)
         # if the player clicks on the validate button
-        if SCREEN_WIDTH/6 + 4*100 - 75 < mouse_pos[0] < SCREEN_WIDTH/6 + 4*100 + 75 and SCREEN_HEIGHT/10 + 100*self.attempts_nb - 35 < mouse_pos[1] <\
-           SCREEN_HEIGHT/10 + 100*self.attempts_nb + 35 and 0 not in self.guess:
+        if SCREEN_WIDTH/6 + 400< mouse_pos[0] < SCREEN_WIDTH/6 + 400 + 150 and (SCREEN_HEIGHT/10 +65*self.attempts_nb)+self.SPACING*(self.attempts_nb-1) < mouse_pos[1] <\
+           (SCREEN_HEIGHT/10 +65*self.attempts_nb)+self.SPACING*(self.attempts_nb-1) + 70 and 0 not in self.guess:
             self.handle_choice()
             if self.attempts_nb <= 5:    # Prevent the game from drawing another round when the game if finished
                     self.draw_round()
@@ -180,11 +180,11 @@ class Mastermind:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
                     # if the player clicks on the play again button
-                    if SCREEN_WIDTH*5/6/2 - 75 < mouse_pos[0] < SCREEN_WIDTH*5/6/2 + 75 and SCREEN_HEIGHT/2 + self.SPACING*(self.attempts_nb+.575) - 15 < mouse_pos[1] <\
-                    SCREEN_HEIGHT/2 + self.SPACING*(self.attempts_nb+.575) + 15:
+                    if SCREEN_WIDTH*5/6/2 - 75 < mouse_pos[0] < SCREEN_WIDTH*5/6/2 + 75 and SCREEN_HEIGHT/2 + self.SPACING*(self.attempts_nb+.575) < mouse_pos[1] <\
+                    SCREEN_HEIGHT/2 + self.SPACING*(self.attempts_nb+.575) + 30:
                         print('played again')
-                        self.play_again()
                         self.attempts_nb = 1  # Reset the number of attempts since we restart the game
+                        self.play_again()
                         return 'play_again'
 
 
