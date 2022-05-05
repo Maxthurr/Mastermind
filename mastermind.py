@@ -26,7 +26,7 @@ class Mastermind:
         self.guess = [0] * 4
         self.picked_color = None
         self.validate_choice = False
-        self.attempts_nb = 1
+        self.attempts_nb = 1  # We are at the firsr attempt when the game starts
 
         pygame.init()
         pygame.display.set_caption('Mastermind')
@@ -45,7 +45,7 @@ class Mastermind:
         
 
     def generate_colors_to_guess(self):
-        self.COLOR_TO_GUESS = [random.choice(self.COLOR_NUM) for i in range(4)]
+        self.COLOR_TO_GUESS = random.sample(self.COLOR_NUM, 4) # Randomly generates 4 colors to guess
         return self.COLOR_TO_GUESS   
 
 
@@ -87,7 +87,7 @@ class Mastermind:
         print('handling choice')
         if self.guess != self.COLOR_TO_GUESS and self.attempts_nb <= 5:
             well_placed = len([i for i, j in zip(self.guess, self.COLOR_TO_GUESS) if i == j])
-            misplaced = len([i for i in self.guess if i in self.COLOR_TO_GUESS]) - well_placed
+            misplaced = len([i for i in self.guess if i in self.COLOR_TO_GUESS]) - well_placed # Get the number of valid colors in the guess that are not in the correct position
             
             well_placed_text = self.font.render(str(well_placed), True, (255, 255, 255))
             misplaced_text = self.font.render(str(misplaced), True, (255, 255, 255))
@@ -116,22 +116,27 @@ class Mastermind:
     def handle_click(self, mouse_pos):
         # print('mouse_pos', mouse_pos)
         for i in range(8):
+            # if the player clicks on a color
             if SCREEN_WIDTH/8*i < mouse_pos[0] < SCREEN_WIDTH/8*(i+1) and 0 < mouse_pos[1] < SCREEN_HEIGHT/10:
                 self.picked_color = self.COLOR_NUM[i]
 
-                self.screen.fill((0, 0, 0), pygame.Rect((SCREEN_WIDTH*5/6/2 - 250/2, SCREEN_HEIGHT/10 + self.SPACING*2/3), (250, 30)))          # erase previous color picked prompt
+                self.screen.fill((0, 0, 0), pygame.Rect((SCREEN_WIDTH*5/6/2 - 125, SCREEN_HEIGHT/10 + self.SPACING*2/3), (250, 30)))          # erase previous color picked prompt
                 color_picked_prompt = self.font.render('Color picked: %s' % self.picked_color.replace('_', ' '), True, (255, 255, 255))
                 color_picked_box = color_picked_prompt.get_rect(center=(SCREEN_WIDTH*5/6/2, SCREEN_HEIGHT/10 + self.SPACING))           # get the box to display the text
                 self.screen.blit(color_picked_prompt, color_picked_box) 
                 print('picked_color', self.picked_color)
         for i in range(4):
-            if self.circles_center[i][0] - 35 < mouse_pos[0] < self.circles_center[i][0] + 35 and self.circles_center[i][1] - 35 < mouse_pos[1] < self.circles_center[i][1] + 35 and self.picked_color is not None:
+            # if the plater clicks on a circle and he has a picked color
+            if self.circles_center[i][0] - 35 < mouse_pos[0] < self.circles_center[i][0] + 35 and self.circles_center[i][1] - 35 < mouse_pos[1] < self.circles_center[i][1] + 35 \
+                and self.picked_color is not None:
                 self.guess[i] = self.picked_color
                 pygame.draw.circle(self.screen, COLOR_DICT[self.picked_color], self.circles_center[i], 30)
                 self.picked_color = None
                 self.screen.fill((0, 0, 0), pygame.Rect((SCREEN_WIDTH*5/6/2 - 250/2, SCREEN_HEIGHT/10 + self.SPACING*2/3), (250, 30)))   # erase previous color picked prompt
                 print('guess', self.guess)
-        if SCREEN_WIDTH/6 + 4*100 - 75 < mouse_pos[0] < SCREEN_WIDTH/6 + 4*100 + 75 and SCREEN_HEIGHT/10 + 100*self.attempts_nb - 35 < mouse_pos[1] < SCREEN_HEIGHT/10 + 100*self.attempts_nb + 35 and 0 not in self.guess:
+        # if the player clicks on the validate button
+        if SCREEN_WIDTH/6 + 4*100 - 75 < mouse_pos[0] < SCREEN_WIDTH/6 + 4*100 + 75 and SCREEN_HEIGHT/10 + 100*self.attempts_nb - 35 < mouse_pos[1] <\
+           SCREEN_HEIGHT/10 + 100*self.attempts_nb + 35 and 0 not in self.guess:
             self.handle_choice()
             if self.attempts_nb <= 5:    # Prevent the game from drawing another round when the game if finished
                     self.draw_round()
@@ -160,18 +165,27 @@ class Mastermind:
         pygame.draw.rect(self.screen, (255, 255, 255), pygame.Rect((SCREEN_WIDTH*5/6/2 - 75, SCREEN_HEIGHT/2 + self.SPACING*(self.attempts_nb+.575)), (150, 30)), width=5)
         self.screen.blit(play_again_text, play_again_box)
         self.screen.blit(game_over_text, game_over_box)
+        pygame.display.flip() # update the screen (needed to display the changes because of the get input after getting into a while True loop and preventing 
+                              # the function self.play to update the screen itself)
 
 
-    def wait_for_input(self):
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                return 'quit'
-            if event.type == KEYDOWN:
-                if event.key == K_a or K_q or event.key == K_ESCAPE:
+    def get_input_after_game_over(self):
+        while True:
+            for event in pygame.event.get():
+                if event.type == QUIT:
                     return 'quit'
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if pygame.mouse.get_pos().collide(pygame.Rect((SCREEN_WIDTH*5/6/2 - 75, SCREEN_HEIGHT/2 + self.SPACING*(self.attempts_nb+.575)), (150, 30))):
-                    play_again()
+                if event.type == KEYDOWN:
+                    if event.key == K_a or K_q or    event.key == K_ESCAPE:
+                        return 'quit'
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_pos = pygame.mouse.get_pos()
+                    # if the player clicks on the play again button
+                    if SCREEN_WIDTH*5/6/2 - 75 < mouse_pos[0] < SCREEN_WIDTH*5/6/2 + 75 and SCREEN_HEIGHT/2 + self.SPACING*(self.attempts_nb+.575) - 15 < mouse_pos[1] <\
+                    SCREEN_HEIGHT/2 + self.SPACING*(self.attempts_nb+.575) + 15:
+                        print('played again')
+                        self.play_again()
+                        self.attempts_nb = 1  # Reset the number of attempts since we restart the game
+                        return 'play_again'
 
 
     def play(self):
@@ -179,7 +193,8 @@ class Mastermind:
         print(self.COLOR_TO_GUESS)
         self.create_ui()
         self.draw_round()
-        while True:
+        game_over = False
+        while not game_over:
             pygame.display.flip()
             key = self.get_key()
             if key == 'quit':
@@ -193,19 +208,24 @@ class Mastermind:
                 print('validated')
                 if self.result() == 'win':
                     print('You win!')
-                    self.game_over('win')          # TO BE DONE: WIN SCREEN AND ADD A BUTTON TO PLAY AGAIN
-                    self.wait_for_input()
+                    self.game_over('win')
+                    game_over = True
                 if self.result() == 'lose':
                     print("You lose")
-                    self.game_over('lose')    # TO BE DONE: LOSE SCREEN, ADD A BUTTON TO PLAY AGAIN AND SHOW THE SOLUTION
-                    self.wait_for_input()
+                    self.game_over('lose')
+                    game_over = True
                 self.validate_choice = False
-                self.guess = [0] * 4
+                self.guess = [0] * 4 # resets the guess for next round
+            if game_over:
+                key = self.get_input_after_game_over()
+                if key == 'quit':
+                    break
+                
 
 
-def play_again():
-    game = Mastermind()
-    game.play()
+    def play_again(self):
+        print('you chose to play again')
+        self.play()
 
 
 if __name__ == '__main__':
