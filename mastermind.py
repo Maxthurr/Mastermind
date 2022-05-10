@@ -85,7 +85,7 @@ class Mastermind:
     def handle_choice(self):
         self.validate_choice = True
         print('handling choice')
-        if self.guess != self.COLOR_TO_GUESS and self.attempts_nb <= 5:
+        if self.guess != self.COLOR_TO_GUESS and 0 not in self.guess and self.attempts_nb <= 5:
             well_placed = len([i for i, j in zip(self.guess, self.COLOR_TO_GUESS) if i == j])
             misplaced = len([i for i in self.guess if i in self.COLOR_TO_GUESS]) - well_placed # Get the number of valid colors in the guess that are not in the correct position
             
@@ -107,8 +107,6 @@ class Mastermind:
                 if event.type == KEYDOWN:
                     if event.key == K_a or K_q or event.key == K_ESCAPE:
                         return 'quit'
-                    if event.key == K_RETURN:
-                        return 'choose'
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     return 'click'
 
@@ -136,7 +134,7 @@ class Mastermind:
                 print('guess', self.guess)
         # if the player clicks on the validate button
         if SCREEN_WIDTH/6 + 400< mouse_pos[0] < SCREEN_WIDTH/6 + 400 + 150 and (SCREEN_HEIGHT/10 +65*self.attempts_nb)+self.SPACING*(self.attempts_nb-1) < mouse_pos[1] <\
-           (SCREEN_HEIGHT/10 +65*self.attempts_nb)+self.SPACING*(self.attempts_nb-1) + 70 and 0 not in self.guess:
+           (SCREEN_HEIGHT/10 +65*self.attempts_nb)+self.SPACING*(self.attempts_nb-1) + 70:
             self.handle_choice()
             if self.attempts_nb <= 5:    # Prevent the game from drawing another round when the game if finished
                     self.draw_round()
@@ -175,7 +173,7 @@ class Mastermind:
                 if event.type == QUIT:
                     return 'quit'
                 if event.type == KEYDOWN:
-                    if event.key == K_a or K_q or    event.key == K_ESCAPE:
+                    if event.key == K_a or K_q or event.key == K_ESCAPE:
                         return 'quit'
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
