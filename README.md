@@ -8,3 +8,7 @@ Note: Some of the synthax used in the python file doesn't work on Edupython but 
 Because of the above note, we put a .exe file to run the game using auto-py-to-exe. The .exe file must be in the same directory as the folder 'icon' This program uses the Python library pyinstaller to create an executable file.
 
 This project has been made using Visual Studio Code, Python and the modules Pygame and Random.
+
+PS : "The Tapanuli orangutan  is a species of orangutan restricted to South Tapanuli in the island of Sumatra in Indonesia. It is one of three known species of orangutan, alongside the Sumatran orangutan, found farther northwest on the island, and the Bornean orangutan. It was described as a distinct species in 2017. As of 2018, there are roughly 800 individuals of this species and it is currently on the critically endangered species list."
+
+https://en.wikipedia.org/wiki/Tapanuli_orangutan
