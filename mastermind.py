@@ -89,11 +89,12 @@ class Mastermind:
             pygame.draw.circle(self.screen, (255, 255, 255), (SCREEN_WIDTH/6 + 100*i, SCREEN_HEIGHT/10 +100*self.attemptsNb), 35, width=5)
             self.circlesCenter.append((SCREEN_WIDTH/6 + 100*i, SCREEN_HEIGHT/10 +100*self.attemptsNb))
 
-        # TODO => COMMENT 
+        # Create the text 'Confirm' and then create a box to place it 
         confirmText = self.font.render('Confirm', True, (255, 255, 255))
         confirmBox = confirmText.get_rect(center=(
             SCREEN_WIDTH/6 + 400 + 75, (SCREEN_HEIGHT/10 + 65*self.attemptsNb + 35)+self.SPACING*(self.attemptsNb-1)))
         self.screen.blit(confirmText, confirmBox)
+        # Draw the rectangle around the 'Confirm' text
         pygame.draw.rect(self.screen, (255, 255, 255), pygame.Rect(
             (SCREEN_WIDTH/6 + 100*4, (SCREEN_HEIGHT/10 +65*self.attemptsNb)+self.SPACING*(self.attemptsNb-1)), (150, 70)), width=5)
 
