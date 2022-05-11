@@ -20,6 +20,7 @@ SCREEN_WIDTH, SCREEN_HEIGHT = 900, 1000
 class Mastermind:
     def __init__(self):
         """
+        In this function, class's constants and globals parameters are defined.
         """
         self.WINDOW_SIZE = (SCREEN_WIDTH, SCREEN_HEIGHT)
         self.SPACING = 35
@@ -40,16 +41,11 @@ class Mastermind:
         self.font = pygame.font.SysFont('Roboto', 30)
         self.checkPlacementFont = pygame.font.SysFont('Roboto', 20)
         self.screen = pygame.display.set_mode(self.WINDOW_SIZE)
-
-
-    def __str__(self):
-        """
-        """
-        return str(self.COLOR_TO_GUESS)
         
 
     def generateColorsToGuess(self):
         """
+        This function randomly choses 4 colors from const COLORS_DICT.
         """
         self.COLOR_TO_GUESS = random.sample(self.COLORS_RGB, 4) # Randomly generates 4 colors to guess
         return self.COLOR_TO_GUESS   
@@ -57,6 +53,7 @@ class Mastermind:
 
     def createUI(self):
         """
+        This function creates the UI (User Interface) by placing colors and text areas.
         """
         self.screen.fill((0, 0, 0))
         
@@ -84,6 +81,7 @@ class Mastermind:
 
     def drawRound(self):
         """
+        This function create areas in which user puts his colors guessed.
         """
         # setting up user inputs 
         self.circlesCenter = []
@@ -102,6 +100,8 @@ class Mastermind:
     
     def handleChoice(self):
         """
+        This function checks the user's choices, if the choiced colors are good (each one), if the user still have some choices and finally 
+        if the colors combine is the winner one.
         """
         self.confirmChoice = True
         print('handling choice')
@@ -123,6 +123,7 @@ class Mastermind:
 
     def get_key(self):
         """
+        This function track user keyboard's activity and close the Mastermind's window if needed.
         """
         while True:
             for event in pygame.event.get():
@@ -136,6 +137,10 @@ class Mastermind:
 
 
     def handleClick(self, mouse_pos):
+        """
+        This function handle every click the user makes and acts in consequence. For example, if the player clicks on a color, on a circle,
+        on the confirm button etc.
+        """
         # print('mouse_pos', mouse_pos)
         
         for i in range(8):
@@ -151,7 +156,7 @@ class Mastermind:
                 print('picked color :', self.pickedColor)
         
         for i in range(4):
-            # if the plater clicks on a circle and he has a picked color
+            # if the player clicks on a circle and he has a picked color
             if self.circlesCenter[i][0] - 35 < mouse_pos[0] < self.circlesCenter[i][0] + 35 \
             and self.circlesCenter[i][1] - 35 < mouse_pos[1] < self.circlesCenter[i][1] + 35 and self.pickedColor is not None:
                 self.guess[i] = self.pickedColor
@@ -173,6 +178,7 @@ class Mastermind:
 
     def result(self):
         """
+        This function returns the statement of the game : if the user won or lost.
         """
         if self.guess == self.COLOR_TO_GUESS:
             return 'won'
@@ -184,6 +190,9 @@ class Mastermind:
 
     def gameOver(self, result):
         """
+        This function is called once the game is done. This function shows the result and ask the user if he wants to play again.
+        The function admit 1 arg :
+        result (type : str) => which is actually the value returned by the function result().
         """
         gameOverText = self.font.render('You %s !' % result, True, (255, 255, 255))
         if self.attemptsNb <= 3:
@@ -207,6 +216,7 @@ class Mastermind:
 
     def get_GameOverInput(self):
         """
+        This function act depending on the user decision, if he wants to play again (by starting a new game) or not (by closing the window).
         """
         while True:
             for event in pygame.event.get():
@@ -228,6 +238,7 @@ class Mastermind:
 
     def play(self):
         """
+        Main function, makes the game works.
         """
         self.generateColorsToGuess()
         print(self.COLOR_TO_GUESS)
@@ -265,6 +276,7 @@ class Mastermind:
 
     def playAgain(self):
         """
+        This function starts a new game.
         """
         print('you chose to play again')
         self.play()
